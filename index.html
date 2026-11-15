@@ -4,6 +4,11 @@
 <title>Le 8 | Journées CODIR et événements à Chalon-sur-Saône</title>
 <style>
 :root{color-scheme:dark;--gold:#d9b879;--bg:#121212;--panel:#222;--muted:#c6c2bb}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f8f6f2;font:16px/1.65 system-ui,Arial,sans-serif}header,main,footer{max-width:1050px;margin:auto;padding:24px}header{display:flex;justify-content:space-between;align-items:center;gap:12px}a{color:var(--gold)}nav a{margin-left:16px}.logo{font-size:25px;font-weight:800;color:var(--gold);text-decoration:none}.hero{padding:75px 0 65px}h1{font-size:clamp(35px,7vw,65px);line-height:1.13;margin:10px 0 20px}h2{font-size:29px;line-height:1.2}p{color:var(--muted)}.eyebrow{color:var(--gold);font-weight:700;letter-spacing:.12em;text-transform:uppercase}.button,button{display:inline-block;border:0;border-radius:9px;padding:13px 20px;background:var(--gold);color:#19150e;text-decoration:none;font-weight:700;cursor:pointer;font-size:16px}.secondary{background:transparent;border:1px solid var(--gold);color:var(--gold)}.actions{display:flex;gap:12px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}.card{background:var(--panel);border:1px solid #3b352d;border-radius:15px;padding:22px}.price{font-size:28px;font-weight:800;color:var(--gold)}section{padding:35px 0}details{background:var(--panel);padding:17px 20px;border-radius:10px;margin:10px 0}summary{cursor:pointer;font-weight:700}label{display:block;margin:14px 0 5px}input,textarea,select{width:100%;padding:12px;background:#181818;color:white;border:1px solid #666;border-radius:7px;font:inherit}textarea{min-height:110px}small{color:var(--muted)}footer{border-top:1px solid #393939}#confirmation{color:var(--gold)}@media(max-width:600px){nav a{margin-left:8px;font-size:13px}.hero{padding:45px 0}}
+</style>
+<style>
+#assistant-launch{position:fixed;right:18px;bottom:18px;z-index:20;border-radius:40px;box-shadow:0 6px 24px #0009}
+#assistant-panel{position:fixed;right:18px;bottom:82px;width:min(390px,calc(100vw - 36px));max-height:min(580px,75vh);background:#202020;border:1px solid #d9b879;border-radius:16px;z-index:21;display:flex;flex-direction:column;box-shadow:0 10px 40px #000a}
+#assistant-panel[hidden]{display:none}#assistant-head{padding:14px 16px;border-bottom:1px solid #514532;display:flex;align-items:center;justify-content:space-between}#assistant-log{padding:14px;overflow:auto;min-height:140px;flex:1}#assistant-log p{margin:8px 0;padding:10px 12px;border-radius:10px;background:#303030;color:#fff;white-space:pre-wrap}#assistant-log p.visitor{background:#534328}#assistant-form{display:flex;gap:7px;padding:12px;border-top:1px solid #514532}#assistant-input{min-width:0;flex:1}#assistant-send{padding:10px}#assistant-close{background:transparent;color:#d9b879;padding:3px 10px}#assistant-note{padding:0 14px 10px;font-size:12px;color:#c6c2bb}
 </style></head><body>
 <header><a class="logo" href="#accueil">LE 8</a><nav><a href="#offres">Offres</a><a href="#questions">Questions</a><a href="#contact">Contact</a></nav></header>
 <main><section class="hero" id="accueil"><div class="eyebrow">Chalon-sur-Saône · Bourgogne</div><h1>Vos réunions méritent un lieu qui change tout.</h1><p>Un loft atypique de 500 m² avec patio et piscine pour vos journées de direction, réunions en petit comité et événements.</p><div class="actions"><a class="button" href="#contact">Demander une journée</a><a class="button secondary" href="#offres">Découvrir les offres</a></div></section>
@@ -13,4 +18,27 @@
 </main><footer>Le 8 · Chalon-sur-Saône · Site de présentation. Aucune réservation n'est validée sans confirmation.</footer>
 <script>
 document.getElementById('request').addEventListener('submit',e=>{e.preventDefault();const v=id=>document.getElementById(id).value;document.getElementById('draft').value='Bonjour, je souhaite obtenir des renseignements pour Le 8.\nÉvénement : '+v('type')+'\nDate souhaitée : '+(v('date')||'À définir')+'\nParticipants : '+v('people')+'\nPrécisions : '+v('message');document.getElementById('result').hidden=false;document.getElementById('result').scrollIntoView({behavior:'smooth'});});document.getElementById('copy').addEventListener('click',async()=>{const d=document.getElementById('draft');try{await navigator.clipboard.writeText(d.value);document.getElementById('confirmation').textContent='Message copié. Vous pouvez le transmettre à l’équipe du 8.'}catch(e){d.select();document.getElementById('confirmation').textContent='Sélectionnez et copiez le message.'}});
+</script>
+<button id="assistant-launch" type="button" aria-controls="assistant-panel" aria-expanded="false">Questions sur Le 8</button>
+<section id="assistant-panel" aria-label="Assistant d'information Le 8" hidden>
+<div id="assistant-head"><strong>Le 8 · Vos questions</strong><button id="assistant-close" type="button" aria-label="Fermer">×</button></div>
+<div id="assistant-log" role="log" aria-live="polite"><p>Bonjour ! Je peux vous renseigner sur les tarifs, le lieu et les journées CODIR. Quelle est votre question ?</p></div>
+<form id="assistant-form"><input id="assistant-input" aria-label="Votre question" placeholder="Écrivez votre question..." required maxlength="800"><button id="assistant-send" type="submit">Envoyer</button></form>
+<div id="assistant-note">Réponses automatiques à partir des informations du site, pas encore une IA générative. Dates et réservations à confirmer.</div>
+</section>
+<script>
+(()=>{const launch=document.getElementById('assistant-launch'),panel=document.getElementById('assistant-panel'),log=document.getElementById('assistant-log'),input=document.getElementById('assistant-input');
+function toggle(show){panel.hidden=!show;launch.setAttribute('aria-expanded',String(show));if(show)input.focus()}
+launch.addEventListener('click',()=>toggle(panel.hidden));document.getElementById('assistant-close').addEventListener('click',()=>toggle(false));
+function add(t,visitor){const p=document.createElement('p');p.textContent=t;if(visitor)p.className='visitor';log.appendChild(p);log.scrollTop=log.scrollHeight}
+function answer(q){const s=q.toLocaleLowerCase('fr').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+if(/prix|tarif|cout|combien|budget/.test(s))return "La journée CODIR est proposée à partir de 149 € par personne, pour un minimum de 10 participants. Le devis définitif est à confirmer.";
+if(/repas|dejeuner|manger|brasero|programme|horaire/.test(s))return "La formule comprend l'accueil, une séance de travail, un déjeuner brasero et la reprise des échanges jusqu'à environ 16 h.";
+if(/adresse|lieu|parking|surface|piscine|patio|situe/.test(s))return "Le 8 se trouve à Chalon-sur-Saône. Il offre un loft de 500 m², un patio d'environ 130 m², une piscine et un parking gratuit.";
+if(/reserv|disponib|date|calendrier|libre/.test(s))return "Les disponibilités ne sont pas consultables en direct. Utilisez « Demander une journée » pour préparer votre demande ; l'équipe devra confirmer votre date.";
+if(/personne|participant|groupe|capacite/.test(s))return "La formule CODIR est affichée à partir de 10 participants. Pour un autre effectif, demandez une proposition personnalisée.";
+if(/contact|devis|demande|organis/.test(s))return "Vous pouvez remplir le formulaire « Préparer votre demande » dans la rubrique Contact. Il prépare un message à copier, sans l'envoyer automatiquement.";
+return "Je n'ai pas de réponse vérifiée à cette question. Consultez la rubrique Questions ou préparez votre demande via Contact : l'équipe du 8 pourra vous répondre."; }
+document.getElementById('assistant-form').addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim();if(!q)return;add(q,true);input.value='';add(answer(q),false)});
+})();
 </script></body></html>
