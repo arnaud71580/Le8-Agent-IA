@@ -27,7 +27,7 @@ document.getElementById('download').addEventListener('click',()=>{const data=doc
 <div id="assistant-head"><strong>Le 8 · Vos questions</strong><button id="assistant-close" type="button" aria-label="Fermer">×</button></div>
 <div id="assistant-log" role="log" aria-live="polite"><p>Bonjour ! Je peux vous renseigner sur les tarifs, le lieu et les journées CODIR. Quelle est votre question ?</p></div>
 <form id="assistant-form"><input id="assistant-input" aria-label="Votre question" placeholder="Écrivez votre question..." required maxlength="800"><button id="assistant-send" type="submit">Envoyer</button></form>
-<div id="assistant-note">Conseiller automatique basé sur les informations vérifiées. Pas encore connecté à un modèle IA. Réservation sur confirmation uniquement.</div>
+<div id="assistant-note">Conseiller automatique du 8. En cas d’indisponibilité de l’IA, les réponses pratiques restent accessibles. Réservation sur confirmation uniquement.</div>
 </section>
 <script>
 (()=>{const launch=document.getElementById('assistant-launch'),panel=document.getElementById('assistant-panel'),log=document.getElementById('assistant-log'),input=document.getElementById('assistant-input');
@@ -45,7 +45,7 @@ if(/personne|participant|groupe|capacite/.test(s))return "La formule CODIR est a
 if(/accessibilite|handicap|pmr|hebergement|dormir|wifi|internet|equipement|projecteur/.test(s))return "Je préfère ne pas vous donner une information non confirmée. Précisez ce besoin dans le formulaire : l’équipe vérifiera les équipements et conditions.";
 if(/contact|devis|demande|organis/.test(s))return "Vous pouvez remplir le formulaire « Préparer votre demande » dans la rubrique Contact. Il prépare une estimation et un récapitulatif à copier ou télécharger, avec ouverture de votre messagerie pour envoyer la demande à arnaud.lhermite@orange.fr.";
 return "Je n'ai pas de réponse vérifiée à cette question. Consultez la rubrique Questions ou préparez votre demande via Contact : l'équipe du 8 pourra vous répondre."; }
-const IA_ENDPOINT=''; // URL du Worker Cloudflare après déploiement
+const IA_ENDPOINT='https://le8-agent-ia.lhermitearnaud.workers.dev/';
 document.getElementById('assistant-form').addEventListener('submit',async e=>{
 e.preventDefault();const q=input.value.trim();if(!q)return;add(q,true);input.value='';
 if(!IA_ENDPOINT){add(answer(q),false);return;}
