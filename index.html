@@ -45,6 +45,16 @@ if(/personne|participant|groupe|capacite/.test(s))return "La formule CODIR est a
 if(/accessibilite|handicap|pmr|hebergement|dormir|wifi|internet|equipement|projecteur/.test(s))return "Je préfère ne pas vous donner une information non confirmée. Précisez ce besoin dans le formulaire : l’équipe vérifiera les équipements et conditions.";
 if(/contact|devis|demande|organis/.test(s))return "Vous pouvez remplir le formulaire « Préparer votre demande » dans la rubrique Contact. Il prépare une estimation et un récapitulatif à copier ou télécharger, avec ouverture de votre messagerie pour envoyer la demande à arnaud.lhermite@orange.fr.";
 return "Je n'ai pas de réponse vérifiée à cette question. Consultez la rubrique Questions ou préparez votre demande via Contact : l'équipe du 8 pourra vous répondre."; }
-document.getElementById('assistant-form').addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim();if(!q)return;add(q,true);input.value='';add(answer(q),false)});
+const IA_ENDPOINT=''; // URL du Worker Cloudflare après déploiement
+document.getElementById('assistant-form').addEventListener('submit',async e=>{
+e.preventDefault();const q=input.value.trim();if(!q)return;add(q,true);input.value='';
+if(!IA_ENDPOINT){add(answer(q),false);return;}
+const send=document.getElementById('assistant-send');send.disabled=true;
+try{const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),20000);
+let response;try{response=await fetch(IA_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q}),signal:controller.signal})}finally{clearTimeout(timeout)}
+const data=await response.json();if(!response.ok||!data.answer)throw Error('IA indisponible');add(data.answer,false)}
+catch{add('Le conseiller IA est momentanément indisponible. Voici les informations disponibles : '+answer(q),false)}
+finally{send.disabled=false}
+});
 })();
 </script></body></html>
