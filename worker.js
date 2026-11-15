@@ -6,7 +6,7 @@ const instructions = "Tu es l'assistant commercial du lieu Le 8. Réponds en fra
 async function tryCloudflare(env, question) {
   if (!env.AI) return null;
   try {
-    const result = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
+    const result = await env.AI.run("@cf/meta/llama-3.3-70b-instruct-fp8-fast", {
       messages: [
         { role: "system", content: instructions },
         { role: "user", content: question }
